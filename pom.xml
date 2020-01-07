@@ -47,10 +47,27 @@
 			<version>3.9.2</version>
 		</dependency>
 		<dependency>
-    <groupId>edu.stanford.nlp</groupId>
-    <artifactId>stanford-corenlp</artifactId>
-    <version>3.9.2</version>
-    <classifier>models</classifier>
-</dependency>
+			<groupId>edu.stanford.nlp</groupId>
+			<artifactId>stanford-corenlp</artifactId>
+			<version>3.9.2</version>
+			<classifier>models</classifier>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.elasticsearch</groupId> -->
+		<!-- <artifactId>elasticsearch-spark_2.11</artifactId> -->
+		<!-- <artifactId>elasticsearch-hadoop</artifactId> -->
+		<!-- <version>6.3.0</version> -->
+		<!-- </dependency> -->
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch-spark-13_2.11</artifactId>
+			<version>7.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.6</version>
+		</dependency>
+
 	</dependencies>
 </project>
