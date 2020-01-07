@@ -37,18 +37,18 @@ public class TwitterSentimentAnalysis {
 		System.setProperty("twitter4j.oauth.accessToken", accessToken);
 		System.setProperty("twitter4j.oauth.accessTokenSecret", accessTokenSecret);
 
-		SparkConf sparkConf = new SparkConf().setAppName("TwitterSentimentAnalysis");
+		SparkConf sparkConf = new SparkConf().setMaster("local[2]").setAppName("TwitterSentimentAnalysis");
 		JavaStreamingContext javaStreamingContext = new JavaStreamingContext(sparkConf, new Duration(5000));
 
 		JavaReceiverInputDStream<Status> tweetStream = TwitterUtils.createStream(javaStreamingContext, filters);
 
 		tweetStream.print();
 		
-		tweetStream.map(t->{
+		tweetStream.filter(t->t.getLang().equalsIgnoreCase("en") && !t.getText().startsWith("RT")).map(t->{
 			HashtagEntity[] hashtagEntities = t.getHashtagEntities();
 			List<String> hashTags = Arrays.stream(hashtagEntities).map(tags->tags.getText()).collect(Collectors.toList());
 			return new TweetPojo(t.getText(), hashTags, t.getRetweetCount(), t.getLang(), SentimentAnalysisUtils.detectSentiment(t.getText())).toString();
-		}).dstream().saveAsTextFiles$default$2();
+		}).foreachRDD(tt->tt.saveAsTextFile("/home/sbm/eclipse-workspace/twitter-sentiment-analysis/jan07"));
 		javaStreamingContext.start();
 		javaStreamingContext.awaitTermination();
 	}

@@ -15,15 +15,9 @@ import edu.stanford.nlp.util.CoreMap;
 
 public class SentimentAnalysisUtils {
 
-	private static Properties prop;
-
-	{
-		prop = new Properties();
-		prop.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse, sentiment");
-	}
-
 	public static String detectSentiment(String messge) {
-
+		Properties prop = new Properties();
+		prop.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse, sentiment");
 		StanfordCoreNLP stanfordCoreNLP = new StanfordCoreNLP(prop);
 		Annotation annotations = stanfordCoreNLP.process(messge);
 		List<CoreMap> list = annotations.get(CoreAnnotations.SentencesAnnotation.class);
