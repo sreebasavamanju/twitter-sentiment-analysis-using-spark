@@ -38,7 +38,7 @@ public class SentimentAnalysisUtils {
 				longest = partText.length();
 			}
 
-			sentiments.add(Double.valueOf(tweetSentiment));
+			sentiments.add(Double.valueOf(mainSentiment));
 			sizes.add(Double.valueOf(partText.length()));
 
 		}
@@ -55,7 +55,7 @@ public class SentimentAnalysisUtils {
 
 		if (weightedSentiment <= 0.0)
 			return "NOT_UNDERSTOOD";
-		else if (weightedSentiment < 1.6)
+		else if (weightedSentiment < 1.0)
 			return "NEGATIVE";
 		else if (weightedSentiment <= 2.0)
 			return "NEUTRAL";
@@ -63,6 +63,7 @@ public class SentimentAnalysisUtils {
 			return "POSITIVE";
 		else
 			return "NOT_UNDERSTOOD";
+		
 
 	}
 }

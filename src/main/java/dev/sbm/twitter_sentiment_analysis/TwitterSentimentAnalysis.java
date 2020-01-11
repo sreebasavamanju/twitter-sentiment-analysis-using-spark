@@ -12,6 +12,9 @@ import org.apache.spark.streaming.twitter.TwitterUtils;
 import org.elasticsearch.spark.rdd.api.java.JavaEsSpark;
 
 import com.google.gson.Gson;
+import com.twitter.twittertext.Extractor;
+import com.twitter.twittertext.TwitterTextParseResults;
+import com.twitter.twittertext.TwitterTextParser;
 
 import dev.sbm.twitter_sentiment_analysis.pojo.Tweet;
 import dev.sbm.twitter_sentiment_analysis.util.SentimentAnalysisUtils;
@@ -54,7 +57,7 @@ public class TwitterSentimentAnalysis {
 		
 		
 		tweetStream.foreachRDD((rdd,time)->{
-			JavaRDD<String> jsonData = rdd.map(t->{
+			JavaRDD<String> jsonData = rdd.filter(tt->tt.getLang().equalsIgnoreCase("en")).map(t->{
 				Tweet tweet = new Tweet();
 				tweet.setUser(t.getUser().getName());
 				tweet.setCreated_at(t.getCreatedAt().toInstant().toString());
@@ -63,7 +66,11 @@ public class TwitterSentimentAnalysis {
 				tweet.setHashtags( Arrays.stream(t.getHashtagEntities()).map(tags->tags.getText()).toArray(String[]::new));
 				tweet.setRetweetCount(t.getRetweetCount());
 				tweet.setLanguage(t.getLang());
-				tweet.setSentiment(SentimentAnalysisUtils.detectSentiment(t.getText()));
+				String tweetText = t.getText();
+				TwitterTextParseResults parseTweet = TwitterTextParser.parseTweet(tweetText);
+				String extractedText = tweetText.substring(parseTweet.validTextRange.start, parseTweet.validTextRange.end);
+				
+				tweet.setSentiment(SentimentAnalysisUtils.detectSentiment(extractedText));
 				return new Gson().toJson(tweet);
 			});
 			JavaEsSpark.saveJsonToEs(jsonData, "twitter/tweet");
